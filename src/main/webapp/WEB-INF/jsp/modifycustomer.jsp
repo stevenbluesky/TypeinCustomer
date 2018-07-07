@@ -203,15 +203,22 @@
         });
     }
     function queryStatus() {
+        var repeat = 16;
         timer = setInterval(function () {
             var result = queryStatusOfReadRingerpring();
+            if (repeat == 0) {
+                clearInterval(timer);
+                spop({template: "采集停止", position  : 'top-center', style: 'success', autoclose: 2000});
+            } else {
+                repeat--;
+            }
             if("failed"!= result){
                 clearInterval(timer);
                 $("#fingerprint").val(result);
                 $("#weiluru").html("已录入");
+                spop({template: "录入成功", position  : 'top-center', style: 'success', autoclose: 2000});
             }
         },1000);
-
     }
     function queryStatusOfReadRingerpring() {
         var flag = "false";

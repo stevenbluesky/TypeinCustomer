@@ -55,4 +55,16 @@ public class CustomerVO {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    @Override
+    public String toString() {
+        return "CustomerVO{" +
+                "customerid=" + customerid +
+                ", name='" + name + '\'' +
+                ", sex=" + sex +
+                ", phonenumber='" + phonenumber + '\'' +
+                ", title=" + title +
+                ", label='" + label + '\'' +
+                '}';
+    }
 }

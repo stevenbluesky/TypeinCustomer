@@ -5,6 +5,8 @@ import cn.com.isurpass.zufang.typeincustomer.po.PersonPO;
 import cn.com.isurpass.zufang.typeincustomer.service.CustomerService;
 import cn.com.isurpass.zufang.typeincustomer.util.PageResult;
 import cn.com.isurpass.zufang.typeincustomer.vo.CustomerVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -22,7 +25,7 @@ import java.util.Map;
 public class CustomerController {
     @Autowired
     private CustomerService cs;
-
+    private static Log log = LogFactory.getLog(CustomerController.class);
     @RequestMapping("login")
     public String login(){
         return "login";
@@ -67,6 +70,7 @@ public class CustomerController {
             return "-1";
         }
         cs.save(cpo,person);//TODO
+        log.info("set1"+cpo);
         return "success";
     }
 
@@ -80,6 +84,7 @@ public class CustomerController {
     public Map<String, Object> customerJsonList(PageResult pr, CustomerVO cvo,HttpServletRequest request){
         Pageable pageable = PageRequest.of(pr.getPage() - 1, pr.getRows(), Sort.Direction.DESC, "customerid");
         PersonPO person = (PersonPO) request.getSession().getAttribute("person");
+        log.info("get2"+cs.listSearchCustomer(pageable,cvo,person));
         return cs.listSearchCustomer(pageable,cvo,person);
     }
 

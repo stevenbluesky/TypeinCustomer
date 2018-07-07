@@ -34,7 +34,7 @@ public class DeviceController {
     public String readFingerpring(@RequestParam("zwavedeviceid") String zwavedeviceid){
         try {
             int zwaveid = Integer.parseInt(zwavedeviceid);
-            //ds.readFingerpring(zwaveid);
+            ds.readFingerpring(zwaveid);
             return "success";
         }catch (Exception e){
             e.printStackTrace();
@@ -48,8 +48,8 @@ public class DeviceController {
         Map<String,String> resultmap = new HashMap<String,String>();
         try {
             int zwaveid = Integer.parseInt(zwavedeviceid);
-            //String fingerprint = ds.queryStatusOfReadFingerpring(zwaveid);
-            String fingerprint = "23ewdfvrdt95swerfdsara46";
+            String fingerprint = ds.queryStatusOfReadFingerpring(zwaveid);
+            //String fingerprint = "23ewdfvrdt95swerfdsara46";
             if(!StringUtils.isEmpty(fingerprint)){
                 resultmap.put("success",fingerprint);
             }

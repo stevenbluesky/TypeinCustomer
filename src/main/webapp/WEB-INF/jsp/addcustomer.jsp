@@ -1,8 +1,9 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Title</title>
+    <title>录入信息</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,6 +32,10 @@
     <div class="row">
     <div class="form-group">
         <button style="float: left;" class='btn btn-default' id='btn1'  onclick="toindex()">主页</button>
+        <div class="text-right">欢迎您：
+            <c:if test="${person.realName==''}">${person.personCode}</c:if>
+            <c:if test="${person.realName!=''}">${person.realName}</c:if>
+            <a href="logout">安全退出</a></div>
         <div class="text-center"><h1>录入用户信息</h1></div>
         <hr>
     </div>
@@ -169,14 +174,20 @@
             url: 'findfingerdevice',
             traditional: true,
             success: function (data) {//返回json结果
-                var str ="<option value=''>选择指纹录入器</option>";
-                for (var i = 0; i < data.length; i++) {
-                    str += '<option value=' + data[i].ptDeviceId + '>'+ data[i].deviceName + '</option>'
+                if(data!=""&&data!=null){
+                    var str ="<option value=''>选择指纹录入器</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += '<option value=' + data[i].ptDeviceId + '>'+ data[i].deviceName + '</option>'
+                    }
+                    $("#fingerprintdevice").html(str);
+                }else{
+                    var str ="<option value=''>没有可用的指纹录入器</option>";
+                    $("#fingerprintdevice").html(str);
                 }
-                $("#fingerprintdevice").html(str);
             },
             error: function (data) {// 请求失败处理函数
-
+                var str ="<option value=''>没有可用的指纹录入器</option>";
+                $("#fingerprintdevice").html(str);
             }
         });
     }
@@ -206,12 +217,20 @@
         });
     }
     function queryStatus() {
+        var repeat = 16;
         timer = setInterval(function () {
             var result = queryStatusOfReadRingerpring();
+            if (repeat == 0) {
+                clearInterval(timer);
+                spop({template: "采集停止", position  : 'top-center', style: 'success', autoclose: 2000});
+            } else {
+                repeat--;
+            }
             if("failed"!= result){
                 clearInterval(timer);
                 $("#fingerprint").val(result);
                 $("#weiluru").html("已录入");
+                spop({template: "录入成功", position  : 'top-center', style: 'success', autoclose: 2000});
             }
         },1000);
 
@@ -232,6 +251,7 @@
                     flag = "true";
                     msg = data.success;
                 }else{
+                    //spop({template: data.failed, position  : 'top-center', style: 'warning', autoclose: 2000});
                 }
             },
             error: function (data) {

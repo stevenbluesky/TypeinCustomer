@@ -95,17 +95,6 @@
                <%-- <input type="text" class="form-control" id="label" name="searchname" value="${customer.label}" placeholder="标签">--%>
             </div>
         </div>
-        <div class="form-group col-md-12" align="left">
-            <label  class="col-md-2">指纹:</label>
-            <%--<div class="col-md-2">未录入</div>--%>
-            <div class="col-md-4">
-                <select id="searchtitle" name="searchtitle"  class="form-control" style="width: 100%" title="选择指纹录入器">
-                    <option value="">选择指纹录入器</option>
-                    <option value="1">录入器1</option>
-                    <option value="2">录入器2</option>
-                </select>
-            </div>
-        </div>
     </form>
     </div>
 </div>

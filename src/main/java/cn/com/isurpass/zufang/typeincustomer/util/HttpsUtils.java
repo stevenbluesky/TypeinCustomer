@@ -143,63 +143,42 @@ public class HttpsUtils {
         return builder.toString();
     }
 
-    public static String toggleDevice(Integer zwavedeviceid,Integer channel,String url){
+    public static String readFingerpring(Integer zwavedeviceid,String url){
 //        String url = "https://app.aibasecloud.com/iremote/thirdpart/zufang/closedevice";
         Map<String, String> map = new HashMap<>();
-        map.put("token", TokenKeeper.getToken());
+        map.put("token", "1");
         map.put("zwavedeviceid", zwavedeviceid.toString());
-        map.put("channel", channel.toString());
         String post = HttpsUtils.post(url, null, map, null);
         JSONObject jo = JSONObject.parseObject(post);
         if (jo == null || jo.getInteger("resultCode") == 30300) {
-            TokenKeeper.getNewToken();
-            map.put("token", TokenKeeper.getToken());
+            //TokenKeeper.getNewToken();
+            map.put("token", "1");
             map.put("zwavedeviceid", zwavedeviceid.toString());
-            map.put("channel", channel.toString());
-            System.out.println(TokenKeeper.getToken());
             return HttpsUtils.post(url, null, map, null);
         }
 //        System.out.println(TokenKeeper.getToken());
         return post;
     }
     public static String readFingerpring(Integer zwavedeviceid){
-        String url = ReadConfig.get("restUrl")+"https://app.aibasecloud.com/iremote/thirdpart/zufang/opendevice";
-        return toggleDevice(zwavedeviceid, 1, url);
+        String url = /*ReadConfig.get("restUrl")+*/"https://dev.isurpass.com.cn/iremote/thirdpart/zufang/readfingerpring";
+        return readFingerpring(zwavedeviceid,url);
     }
     public static String queryStatusOfReadFingerpring(Integer zwavedeviceid){
-        String url = "https://app.aibasecloud.com/iremote/thirdpart/zufang/closedevice";
-        return toggleDevice(zwavedeviceid, 1, url);
+        String url = "https://dev.isurpass.com.cn/iremote/thirdpart/zufang/querystatusofreadfingerpring";
+        return queryStatusofReadFingerpring(zwavedeviceid, url);
+    }
+    public static String queryStatusofReadFingerpring(Integer zwavedeviceid,String url){
+        Map<String, String> map = new HashMap<>();
+        map.put("token", "1");
+        map.put("zwavedeviceid", zwavedeviceid.toString());
+        String post = HttpsUtils.post(url, null, map, null);
+        JSONObject jo = JSONObject.parseObject(post);
+        if (jo == null || jo.getInteger("resultCode") == 30300) {
+            map.put("token", "1");
+            map.put("zwavedeviceid", zwavedeviceid.toString());
+            return HttpsUtils.post(url, null, map, null);
+        }
+        return post;
     }
 
-    public static void main(String[] args) throws Exception {
-      /*  for (int i = 0; i < 100; i++) {
-            Map<String, String> map = new HashMap<>();
-            map.put("loginname", "00"+(50001+i));
-//        map.put("code", "thirdparter_open_demo");
-//        map.put("password", "c1412bf534b84da289662efba5f10761989276");
-            map.put("token", "263e881c34c04e04b3db2a8226cf11cf364894");
-//            map.put("loginname","");
-//        map.put("zwavedeviceid", "11544");
-//        map.put("channel ", "[0,255]");
-            String post = HttpsUtils.post("https://test.isurpass.com.cn/iremote/thirdpart/zufang/querythirdpartdevices", null, map, null);
-            System.out.println(post);
-            Thread.sleep(50);
-        }*/
-
-//      String url = "https://app.aibasecloud.com/iremote/thirdpart/login";
-//      url = "https://app.aibasecloud.com/iremote/thirdpart/zufang/closedevice";
-//        Map<String, String> map = new HashMap<>();
-////        map.put("code", "tp_jwzh_ameta_all");
-////        map.put("password", "H8yAETIfB50f1rEElR5yZ68B");
-//        map.put("token", "a5ed58fe42184cc0a015c4368fe50b78340097");
-//        map.put("zwavedeviceid", "20");
-//        map.put("channel", "1");
-////        String post = HttpsUtils.post("https://app.aibasecloud.com/iremote/thirdpart/login", null, map, null);
-//        String post = HttpsUtils.post(url, null, map, null);
-//        JSONObject jo = JSONObject.parseObject(post);
-//
-//        System.out.println(jo.getString("resultCode"));
-        //String s = openDevice(11542);
-        //System.out.println(s);
-    }
 }

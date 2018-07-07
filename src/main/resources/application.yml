@@ -4,6 +4,11 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     username: root
     password: root
+  http:
+    encoding:
+      charset: utf-8
+      force: true
+      enabled: true
 jpa:
   database: MySQL
   show-sql: true

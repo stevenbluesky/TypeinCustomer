@@ -14,7 +14,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             return true;
         }
         //验证
-        Object person = request.getSession().getAttribute("person");
+       Object person = request.getSession().getAttribute("person");
         if(person==null){
             response.sendRedirect(request.getContextPath()+"/login");
             return false;

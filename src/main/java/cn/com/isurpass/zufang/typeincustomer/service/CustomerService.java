@@ -7,6 +7,8 @@ import cn.com.isurpass.zufang.typeincustomer.po.PersonPO;
 import cn.com.isurpass.zufang.typeincustomer.util.Constants;
 import cn.com.isurpass.zufang.typeincustomer.util.StringUtil;
 import cn.com.isurpass.zufang.typeincustomer.vo.CustomerVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ public class CustomerService {
     private CustomerDAO cd;
     @Autowired
     private PersonDAO pd;
+    private static Log log = LogFactory.getLog(CustomerService.class);
     @Transactional
     public Map<String, Object> listSearchCustomer(Pageable pageable, CustomerVO cvo, PersonPO person) {
         Map<String,Object> map = new HashMap<>();
@@ -44,6 +47,7 @@ public class CustomerService {
         setProperties(page, listVO);
         map.put("rows",listVO);
         map.put("total",count);
+        log.info("get1"+listVO);
      return map;
     }
     private void setProperties(Page<CustomerPO> listpage, List<CustomerVO> listVO) {
@@ -78,6 +82,7 @@ public class CustomerService {
         cpo.setPersonid(person.getId());
         String customerinfo = cpo.getName()+cpo.getPhonenumber()+cpo.getIdentity()+cpo.getMail()+cpo.getAddress()+cpo.getLabel();
         cpo.setCustomerinfo(customerinfo);
+        log.info("set2"+cpo);
         cd.save(cpo);
     }
 
