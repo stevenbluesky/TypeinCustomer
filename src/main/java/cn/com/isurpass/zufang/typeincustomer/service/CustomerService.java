@@ -47,7 +47,6 @@ public class CustomerService {
         setProperties(page, listVO);
         map.put("rows",listVO);
         map.put("total",count);
-        log.info("get1"+listVO);
      return map;
     }
     private void setProperties(Page<CustomerPO> listpage, List<CustomerVO> listVO) {
@@ -82,7 +81,6 @@ public class CustomerService {
         cpo.setPersonid(person.getId());
         String customerinfo = cpo.getName()+cpo.getPhonenumber()+cpo.getIdentity()+cpo.getMail()+cpo.getAddress()+cpo.getLabel();
         cpo.setCustomerinfo(customerinfo);
-        log.info("set2"+cpo);
         cd.save(cpo);
     }
 

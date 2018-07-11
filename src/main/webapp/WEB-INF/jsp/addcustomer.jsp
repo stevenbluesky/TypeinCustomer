@@ -61,8 +61,8 @@
                 <label for="title" class="col-md-2 control-label">职务:</label>
                 <div class="col-md-4">
                     <select id="title" name="title"  class="form-control" style="width: 100%" title="职务">
-                        <option value="1">列车长</option>
                         <option value="2">乘务员</option>
+                        <option value="1">列车长</option>
                     </select>
                 </div>
             </div>
@@ -112,34 +112,51 @@
 <div class="col-md-1"></div>
 <script type="text/javascript">
     $().ready(function(){
-        $("#defaultForm").validate({
-            rules : {//rules 用于对表单内容进行约束
-                name : {
-                    required:true,
-                    rangelength:[2,20]
+        $('#defaultForm').bootstrapValidator({
+            //       live: 'disabled',
+            message: 'This value is not valid',
+/*            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },*/
+            fields: {
+                name: {
+                    message: 'The name is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 2,
+                            max: 30,
+                            message: '用户名长度必须在2到30之间'
+                        }
+                    }
                 },
                 phonenumber:{
-                        required:true,
-                        number:true
+                    message: 'The phonenumber is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '手机号码不能为空'
+                        },
+                        regexp: {
+                            regexp: /^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))[0-9]{8}$/,
+                            message: '请输入正确的手机号码'
+                        }
+                    }
                 },
-                mail : {
-                    email : true//email :true 验证是否是邮箱格式
-                }
-            },
-            messages : {
-                name : {
-                    required:"请输入用户名",
-                    rangelength:"输入长度范围为{0}到{1}"
+                mail: {
+                    validators: {
+                        emailAddress: {
+                            message: '请输入正确的邮件地址如：123@qq.com'
+                        }
+                    }
                 },
-                phonenumber:{
-                    required:"请输入手机号码",
-                    number:"手机号码格式不对"
-                },
-                mail : {
-                    email : "邮箱格式不正确"
-                }
             }
         });
+
+
         getFingerDevice();
     });
     function toindex() {

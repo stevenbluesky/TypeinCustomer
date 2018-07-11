@@ -70,7 +70,6 @@ public class CustomerController {
             return "-1";
         }
         cs.save(cpo,person);//TODO
-        log.info("set1"+cpo);
         return "success";
     }
 
@@ -84,7 +83,6 @@ public class CustomerController {
     public Map<String, Object> customerJsonList(PageResult pr, CustomerVO cvo,HttpServletRequest request){
         Pageable pageable = PageRequest.of(pr.getPage() - 1, pr.getRows(), Sort.Direction.DESC, "customerid");
         PersonPO person = (PersonPO) request.getSession().getAttribute("person");
-        log.info("get2"+cs.listSearchCustomer(pageable,cvo,person));
         return cs.listSearchCustomer(pageable,cvo,person);
     }
 

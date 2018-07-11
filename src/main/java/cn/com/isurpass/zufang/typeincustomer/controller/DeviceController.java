@@ -37,7 +37,6 @@ public class DeviceController {
             ds.readFingerpring(zwaveid);
             return "success";
         }catch (Exception e){
-            e.printStackTrace();
             return e.getMessage();
         }
     }
@@ -57,7 +56,6 @@ public class DeviceController {
             return resultmap;
         }catch (Exception e){
             resultmap.put("failed",e.getMessage());
-            logger.info(e.getMessage());
             return resultmap;
         }
     }
