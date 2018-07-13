@@ -1,5 +1,8 @@
 package cn.com.isurpass.zufang.typeincustomer.util;
 
+import cn.com.isurpass.zufang.typeincustomer.dao.SystemParameterDAO;
+import cn.com.isurpass.zufang.typeincustomer.po.SystemParameterPO;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.http.*;
@@ -18,6 +21,10 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -26,13 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class HttpsUtils {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static SSLConnectionSocketFactory sslsf = null;
     private static PoolingHttpClientConnectionManager cm = null;
     private static SSLContextBuilder builder = null;
-
+    private static String dbtoken = "";
+    private static final String dbkey = "zufang_key";
+    private static SystemParameterDAO spd;
+    private static HttpsUtils instance = new HttpsUtils();
     static {
         try {
             builder = new SSLContextBuilder();
@@ -57,7 +68,6 @@ public class HttpsUtils {
 
     /**
      * httpClient post请求
-     *
      * @param url    请求url
      * @param header 头部信息
      * @param param  请求参数 form提交适用
@@ -144,41 +154,89 @@ public class HttpsUtils {
     }
 
     public static String readFingerpring(Integer zwavedeviceid,String url){
-//        String url = "https://app.aibasecloud.com/iremote/thirdpart/zufang/closedevice";
+        String token = getToken();
         Map<String, String> map = new HashMap<>();
-        map.put("token", "1");
+        map.put("token", token);
         map.put("zwavedeviceid", zwavedeviceid.toString());
         String post = HttpsUtils.post(url, null, map, null);
         JSONObject jo = JSONObject.parseObject(post);
         if (jo == null || jo.getInteger("resultCode") == 30300) {
-            //TokenKeeper.getNewToken();
-            map.put("token", "1");
+            instance.login();
+            SystemParameterPO sp = new SystemParameterPO(dbkey,AES.encrypt2Str(dbtoken));
+            spd.save(sp);
+            map.put("token", dbtoken);
             map.put("zwavedeviceid", zwavedeviceid.toString());
             return HttpsUtils.post(url, null, map, null);
         }
-//        System.out.println(TokenKeeper.getToken());
         return post;
     }
     public static String readFingerpring(Integer zwavedeviceid){
-        String url = /*ReadConfig.get("restUrl")+*/"https://dev.isurpass.com.cn/iremote/thirdpart/zufang/readfingerpring";
+        String url = ReadConfig.get("restUrl")+"thirdpart/zufang/readfingerpring";
         return readFingerpring(zwavedeviceid,url);
     }
     public static String queryStatusOfReadFingerpring(Integer zwavedeviceid){
-        String url = "https://dev.isurpass.com.cn/iremote/thirdpart/zufang/querystatusofreadfingerpring";
+        String url = ReadConfig.get("restUrl")+"thirdpart/zufang/querystatusofreadfingerpring";
         return queryStatusofReadFingerpring(zwavedeviceid, url);
     }
     public static String queryStatusofReadFingerpring(Integer zwavedeviceid,String url){
+        String token = getToken();
         Map<String, String> map = new HashMap<>();
-        map.put("token", "1");
+        map.put("token", token);
         map.put("zwavedeviceid", zwavedeviceid.toString());
         String post = HttpsUtils.post(url, null, map, null);
         JSONObject jo = JSONObject.parseObject(post);
         if (jo == null || jo.getInteger("resultCode") == 30300) {
-            map.put("token", "1");
+            instance.login();
+            SystemParameterPO sp = new SystemParameterPO(dbkey,AES.encrypt2Str(dbtoken));
+            spd.save(sp);
+            map.put("token", dbtoken);
             map.put("zwavedeviceid", zwavedeviceid.toString());
             return HttpsUtils.post(url, null, map, null);
         }
         return post;
     }
 
+    public static String getToken(){
+        SystemParameterPO systemparameter = spd.findByStrkey(dbkey);
+        if(StringUtil.checkNull(systemparameter)||StringUtil.checkNull(systemparameter.getStrvalue())){
+            instance.login();
+        }else{
+            dbtoken = AES.decrypt2Str(systemparameter.getStrvalue());
+            if(dbtoken==null){
+                instance.login();
+            }
+        }
+        return HttpsUtils.dbtoken;
+    }
+    @Transactional
+    public synchronized void login(){
+        String code = ReadConfig.get("restCode");
+        String password = ReadConfig.get("restPassword");
+
+        Map<String , String> pmap = new HashMap<String , String>();
+        pmap.put("code", code);
+        pmap.put("password", password);
+        String str = HttpsUtils.post(ReadConfig.get("restUrl") + "thirdpart/login",null, pmap,null);
+        Map map = null;
+        try {
+            map = JSON.parseObject(str,HashMap.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Server connection failed");
+        }
+        if(StringUtil.checkNull(map.get("resultCode")) || StringUtil.checkNull(map.get("token"))){
+            throw new RuntimeException("Login to third-party platform failed");
+        }
+        int resultCode = Integer.parseInt(map.get("resultCode").toString());
+        if(resultCode != 0){
+            throw new RuntimeException("Login to third-party platform failed");
+        }
+        dbtoken = map.get("token").toString();
+        SystemParameterPO sp = new SystemParameterPO(dbkey,AES.encrypt2Str(dbtoken));
+        spd.save(sp);
+    }
+
+    @Autowired
+    public void setSpd(SystemParameterDAO spd) {
+        HttpsUtils.spd = spd;
+    }
 }
