@@ -3,16 +3,18 @@ package cn.com.isurpass.zufang.typeincustomer.util;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+@Service
 public class TokenKeeper {
     private volatile static TokenKeeper tokenKeeper = null;
-    private static final String code = ReadConfig.get("restCode");
-    private static final String password = ReadConfig.get("restPassword");
+    public static  String code ;
+    private static String password;
     private String token = "";
     private static final Logger logger = LoggerFactory.getLogger(TokenKeeper.class);
 //    private long time = -1;
@@ -58,5 +60,13 @@ public class TokenKeeper {
         map.put("password", TokenKeeper.password);
         String post = HttpsUtils.post(url, null, map, null);
         return post;
+    }
+    @Value("${restCode}")
+    public void setCode(String code) {
+        TokenKeeper.code = code;
+    }
+    @Value("${restPassword}")
+    public void setPassword(String password) {
+        TokenKeeper.password = password;
     }
 }

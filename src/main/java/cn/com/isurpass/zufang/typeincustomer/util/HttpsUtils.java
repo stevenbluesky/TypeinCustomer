@@ -22,7 +22,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Component
 public class HttpsUtils {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
@@ -44,6 +45,10 @@ public class HttpsUtils {
     private static final String dbkey = "zufang_key";
     private static SystemParameterDAO spd;
     private static HttpsUtils instance = new HttpsUtils();
+
+    public static String restUrl;
+    public static String restCode;
+    public static String restPassword;
     static {
         try {
             builder = new SSLContextBuilder();
@@ -171,11 +176,11 @@ public class HttpsUtils {
         return post;
     }
     public static String readFingerpring(Integer zwavedeviceid){
-        String url = ReadConfig.get("restUrl")+"thirdpart/zufang/readfingerpring";
+        String url = restUrl+"thirdpart/zufang/readfingerpring";
         return readFingerpring(zwavedeviceid,url);
     }
     public static String queryStatusOfReadFingerpring(Integer zwavedeviceid){
-        String url = ReadConfig.get("restUrl")+"thirdpart/zufang/querystatusofreadfingerpring";
+        String url = restUrl+"thirdpart/zufang/querystatusofreadfingerpring";
         return queryStatusofReadFingerpring(zwavedeviceid, url);
     }
     public static String queryStatusofReadFingerpring(Integer zwavedeviceid,String url){
@@ -210,13 +215,13 @@ public class HttpsUtils {
     }
     @Transactional
     public synchronized void login(){
-        String code = ReadConfig.get("restCode");
-        String password = ReadConfig.get("restPassword");
+        String code =restCode;
+        String password = restPassword;
 
         Map<String , String> pmap = new HashMap<String , String>();
         pmap.put("code", code);
         pmap.put("password", password);
-        String str = HttpsUtils.post(ReadConfig.get("restUrl") + "thirdpart/login",null, pmap,null);
+        String str = HttpsUtils.post(restUrl + "thirdpart/login",null, pmap,null);
         Map map = null;
         try {
             map = JSON.parseObject(str,HashMap.class);
@@ -238,5 +243,17 @@ public class HttpsUtils {
     @Autowired
     public void setSpd(SystemParameterDAO spd) {
         HttpsUtils.spd = spd;
+    }
+    @Value("${restUrl}")
+    public void setRestUrl(String restUrl) {
+        HttpsUtils.restUrl = restUrl;
+    }
+    @Value("${restCode}")
+    public void setRestCode(String restCode) {
+        HttpsUtils.restCode = restCode;
+    }
+    @Value("${restPassword}")
+    public void setRestPassword(String restPassword) {
+        HttpsUtils.restPassword = restPassword;
     }
 }

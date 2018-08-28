@@ -1,5 +1,6 @@
 package cn.com.isurpass.zufang.typeincustomer;
 
+import cn.com.isurpass.zufang.typeincustomer.util.HttpsUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,4 +14,8 @@ public class TypeinCustomerApplicationTests {
 	public void contextLoads() {
 	}
 
+	@Test
+	public void teststatic(){
+		System.out.println(HttpsUtils.getToken());
+	}
 }
