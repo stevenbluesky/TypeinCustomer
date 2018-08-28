@@ -107,35 +107,55 @@
 <div class="col-md-1"></div>
 <script type="text/javascript">
     $().ready(function(){
-        $("#defaultForm").validate({
-            rules : {//rules 用于对表单内容进行约束
-                name : {
-                    required:true,
-                    rangelength:[2,20]
+        $('#defaultForm').bootstrapValidator({
+            //       live: 'disabled',
+            message: 'This value is not valid',
+            /*            feedbackIcons: {
+                            valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },*/
+            fields: {
+                name: {
+                    message: 'The name is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 2,
+                            max: 30,
+                            message: '用户名长度必须在2到30之间'
+                        },
+                        regexp: {
+                            regexp: /^[A-Za-z0-9_\-\u4e00-\u9fa5-\s+]+$/,
+                            message: '用户名只能由字母、数字、下划线、空格、点组成！'
+                        }
+                    }
                 },
                 phonenumber:{
-                    required:true,
-                    number:true
+                    message: 'The phonenumber is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '手机号码不能为空！'
+                        },
+                        regexp: {
+                            regexp: /^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))[0-9]{8}$/,
+                            message: '请输入正确的手机号码！'
+                        }
+                    }
                 },
-                mail : {
-                    email : true//email :true 验证是否是邮箱格式
-                }
-
-            },
-            messages : {
-                name : {
-                    required:"请输入用户名",
-                    rangelength:"输入长度范围为{0}到{1}"
+                mail: {
+                    validators: {
+                        emailAddress: {
+                            message: '请输入正确的邮件地址如：123@qq.com'
+                        }
+                    }
                 },
-                phonenumber:{
-                    required:"请输入手机号码",
-                    number:"手机号码格式不对"
-                },
-                mail : {
-                    email : "邮箱格式不正确"
-                }
             }
         });
+
+
         getFingerDevice();
     });
     $("#resetform").click(function(r){
@@ -143,22 +163,27 @@
         $("#weiluru").html("未录入");
     });
     $("#submitform").click(function(r){
-        $.ajax({
-            type: 'post',
-            url: 'savecustomer',
-            traditional: true,
-            data:  $('#defaultForm').serialize() ,
-            success: function (data) {//返回json结果
-                if(data=="-1"){
-                    spop({template: '请填写姓名和手机号码！', position  : 'top-center', style: 'warning', autoclose: 2000});
-                }else {
-                    parent.location.href = parent.location.href;
+        $("#defaultForm").bootstrapValidator('validate');//提交验证
+        if ($("#defaultForm").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码
+            $.ajax({
+                type: 'post',
+                url: 'savecustomer',
+                traditional: true,
+                data:  $('#defaultForm').serialize() ,
+                success: function (data) {//返回json结果
+                    if(data=="-1"){
+                        spop({template: '请填写姓名和手机号码！', position  : 'top-center', style: 'warning', autoclose: 2000});
+                    }else {
+                        parent.location.href = parent.location.href;
+                    }
+                },
+                error: function (data) {
+                    spop({template: '修改失败！', position  : 'top-center', style: 'error',});
                 }
-            },
-            error: function (data) {
-                spop({template: '修改失败！', position  : 'top-center', style: 'error',});
-            }
-        });
+            });
+        }else{
+            alert("请完善数据！");
+        }
     });
     function getFingerDevice() {
         $.ajax({

@@ -40,7 +40,7 @@
         <hr>
     </div>
     <form id="defaultForm" method="POST" class="form-horizontal">
-            <div class="form-group col-md-12" align="">
+        <div class="form-group col-md-12" align="">
                 <label for="name" class="col-md-2  control-label">姓名<font color="red">*</font>:</label>
                 <div class="col-md-4">
                     <input type="text" class="form-control" id="name" name="name" placeholder="姓名">
@@ -131,6 +131,10 @@
                             min: 2,
                             max: 30,
                             message: '用户名长度必须在2到30之间'
+                        },
+                        regexp: {
+                            regexp: /^[A-Za-z0-9_\-\u4e00-\u9fa5-\s+]+$/,
+                            message: '用户名只能由字母、数字、下划线、空格、点组成！'
                         }
                     }
                 },
@@ -168,22 +172,27 @@
         $("#weiluru").html("未录入");
     });
     $("#submitform").click(function(r){
-        $.ajax({
-            type: 'post',
-            url: 'savecustomer',
-            traditional: true,
-            data:  $('#defaultForm').serialize() ,
-            success: function (data) {//返回json结果
-                if(data=="-1"){
-                    spop({template: '请填写姓名和电话号码！', position  : 'top-center', style: 'warning', autoclose: 2000});
-                }else {
-                    toindex();
+        $("#defaultForm").bootstrapValidator('validate');//提交验证
+        if ($("#defaultForm").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码
+            $.ajax({
+                type: 'post',
+                url: 'savecustomer',
+                traditional: true,
+                data: $('#defaultForm').serialize(),
+                success: function (data) {//返回json结果
+                    if (data == "-1") {
+                        spop({template: '请填写姓名和电话号码！', position: 'top-center', style: 'warning', autoclose: 2000});
+                    } else {
+                        toindex();
+                    }
+                },
+                error: function (data) {// 请求失败处理函数
+                    spop({template: '添加失败！', position: 'top-center', style: 'error',});
                 }
-            },
-            error: function (data) {// 请求失败处理函数
-                spop({template: '添加失败！', position  : 'top-center', style: 'error',});
-            }
-        });
+            });
+        }else{
+            alert("请完善数据！");
+        }
     });
     function getFingerDevice() {
         $.ajax({
