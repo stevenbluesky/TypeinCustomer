@@ -236,8 +236,10 @@ public class HttpsUtils {
             throw new RuntimeException("Login to third-party platform failed");
         }
         dbtoken = map.get("token").toString();
+        System.out.println("new:"+dbtoken);
         SystemParameterPO sp = new SystemParameterPO(dbkey,AES.encrypt2Str(dbtoken));
         spd.save(sp);
+        System.out.println("保存token");
     }
 
     @Autowired
