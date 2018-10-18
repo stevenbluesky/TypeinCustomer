@@ -106,6 +106,7 @@
 </div>
 <div class="col-md-1"></div>
 <script type="text/javascript">
+    var ifcouldclick =1;
     $().ready(function(){
         $('#defaultForm').bootstrapValidator({
             //       live: 'disabled',
@@ -208,6 +209,11 @@
             spop({template: '请选择指纹录入器！', position  : 'top-center', style: 'warning', autoclose: 2000});
             return;
         }
+        if(ifcouldclick==0){
+            spop({template: '请录入指纹或刷新再试！', position  : 'top-center', style: 'warning', autoclose: 2000});
+            return ;
+        }
+        ifcouldclick =0;
         $.ajax({
             type: 'post',
             url: 'readfingerpring',
@@ -219,25 +225,28 @@
                 if(data=="success"){
                     queryStatus();
                 }else{
+                    ifcouldclick =1;
                     spop({template: data, position  : 'top-center', style: 'warning', autoclose: 2000});
                 }
             },
             error: function (data) {
+                ifcouldclick =1;
                 spop({template: '操作失败，请重试！', position  : 'top-center', style: 'warning', autoclose: 2000});
             }
         });
     }
     function queryStatus() {
-        var repeat = 16;
+        var repeat = 17;
         timer = setInterval(function () {
             var result = queryStatusOfReadRingerpring();
-            if (repeat == 0) {
+            if (repeat == 1) {
+                ifcouldclick=1;
                 clearInterval(timer);
-                spop({template: "采集停止", position  : 'top-center', style: 'success', autoclose: 2000});
-            } else {
-                repeat--;
+                spop({template: "超时，采集停止", position  : 'top-center', style: 'success', autoclose: 2000});
             }
+            repeat--;
             if("failed"!= result){
+                ifcouldclick=1;
                 clearInterval(timer);
                 $("#fingerprint").val(result);
                 $("#weiluru").html("已录入");
