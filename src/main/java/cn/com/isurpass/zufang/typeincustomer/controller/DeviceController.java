@@ -47,10 +47,14 @@ public class DeviceController {
         Map<String,String> resultmap = new HashMap<String,String>();
         try {
             int zwaveid = Integer.parseInt(zwavedeviceid);
-            String fingerprint = ds.queryStatusOfReadFingerpring(zwaveid);
+            String returnstr = ds.queryStatusOfReadFingerpring(zwaveid);
             //String fingerprint = "23ewdfvrdt95swerfdsara46";
-            if(!StringUtils.isEmpty(fingerprint)){
-                resultmap.put("success",fingerprint);
+            if(!StringUtils.isEmpty(returnstr)&&returnstr.length()>100){
+                resultmap.put("success",returnstr);
+                resultmap.put("temp","");
+            }else if(!StringUtils.isEmpty(returnstr)){
+                resultmap.put("success","");
+                resultmap.put("temp",returnstr);
             }
             resultmap.put("hi","hi");
             return resultmap;

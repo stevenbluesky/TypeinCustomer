@@ -62,12 +62,15 @@ public class DeviceService {
         if(result.getInteger("status") == 0){
             throw new RuntimeException("设备没有进入指纹采集状态");
         }else if(result.getInteger("status") == 1){
-            throw new RuntimeException("正在采集指纹");
+            return "正在采集指纹";
+            //throw new RuntimeException("正在采集指纹");
         }else if(result.getInteger("status") == 2){
+            //return "请再次录入指纹";
             throw new RuntimeException("再次输入指纹");
         }else if(result.getInteger("status") == 10){
             throw new RuntimeException("采集超时，请重试");
         }else if(result.getInteger("status") == 11){
+            //return "指纹不匹配，采集失败";
             throw new RuntimeException("指纹不匹配，采集失败");
         }else if(result.getInteger("status") == 3){
             String fingerprint = result.getString("fingerprint");

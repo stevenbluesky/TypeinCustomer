@@ -112,6 +112,7 @@
 <div class="col-md-1"></div>
 <script type="text/javascript">
     var ifcouldclick =1;
+    var again = 1;
     $().ready(function(){
         $('#defaultForm').bootstrapValidator({
             message: 'This value is not valid',
@@ -249,12 +250,14 @@
             var result = queryStatusOfReadRingerpring();
             if (repeat == 1) {
                 ifcouldclick=1;
+                again=1;
                 clearInterval(timer);
                 spop({template: "超时，采集停止", position  : 'top-center', style: 'success', autoclose: 2000});
             }
             repeat--;
             if("failed"!= result){
                 ifcouldclick=1;
+                again=1;
                 clearInterval(timer);
                 $("#fingerprint").val(result);
                 $("#weiluru").html("已录入");
@@ -266,6 +269,7 @@
     function queryStatusOfReadRingerpring() {
         var flag = "false";
         var msg = "";
+
         $.ajax({
             type: 'post',
             url: 'querystatusofreadfingerpring',
@@ -278,8 +282,11 @@
                 if(data.success!=""&&data.success!=undefined){
                     flag = "true";
                     msg = data.success;
+                }else if(data.temp!=""&&data.temp!=undefined&&again==1){
+                    again=2;
+                    spop({template: data.temp, position  : 'top-center', style: 'success', autoclose: 2000});
                 }else{
-                    //spop({template: data.failed, position  : 'top-center', style: 'warning', autoclose: 2000});
+
                 }
             },
             error: function (data) {
