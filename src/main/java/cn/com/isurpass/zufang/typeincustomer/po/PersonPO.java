@@ -1,7 +1,5 @@
 package cn.com.isurpass.zufang.typeincustomer.po;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -41,6 +39,9 @@ public class PersonPO {
     /**插入时间*/
     @Column(name = "inputdate")
     private Date inputDate;
+    private Integer type;
+    private Integer superpersonid;
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -120,5 +121,29 @@ public class PersonPO {
 
     public void setInputDate(Date inputDate) {
         this.inputDate = inputDate;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getSuperpersonid() {
+        return superpersonid;
+    }
+
+    public void setSuperpersonid(Integer superpersonid) {
+        this.superpersonid = superpersonid;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

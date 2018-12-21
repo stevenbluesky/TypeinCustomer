@@ -11,7 +11,9 @@ spring:
       enabled: true
   jpa:
     database: MySQL
-    show-sql: true
+    show-sql: false
+    properties.hibernate.format_sql: true
+    properties.hibernate.show_sql: false
     hibernate:
       naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
       dialect: org.hibernate.dialect.MySQL5Dialect

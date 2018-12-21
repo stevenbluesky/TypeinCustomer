@@ -78,16 +78,30 @@ public class CustomerService {
         cpo.setCountrycode(Constants.DEFAULT_COUNTRY_CODE);
         cpo.setIdentitytype(Constants.DEFAULT_IDENTITY_TYPE);
         cpo.setCreatetime(new Date());
-        cpo.setPersonid(person.getId());
+
         String customerinfo = cpo.getName()+cpo.getPhonenumber()+cpo.getIdentity()+cpo.getMail()+cpo.getAddress()+cpo.getLabel();
         cpo.setCustomerinfo(customerinfo);
+        if(person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
+            cpo.setPersonid(person.getSuperpersonid().longValue());
+            cpo.setTypeinpersonid(person.getId().intValue());
+        }else{
+            cpo.setPersonid(person.getId());
+            cpo.setTypeinpersonid(person.getId().intValue());
+        }
+
         cd.save(cpo);
     }
 
     @Transactional
     public PersonPO checkLogin(PersonPO ppo) {
         ppo.setPersonPassword(StringUtil.md5(ppo.getPersonPassword()));
-        PersonPO loginperson = pd.findByPersonCodeAndPersonPassword(ppo.getPersonCode(),ppo.getPersonPassword());
-        return loginperson;
+        PersonPO person = pd.findByPersonCodeAndPersonPasswordAndStatusIn(ppo.getPersonCode(),ppo.getPersonPassword(),new int[]{1,2});
+        if(person!=null&&person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
+            PersonPO superperson = pd.findById(person.getSuperpersonid().longValue()).orElse(null);
+            if(superperson!=null&&superperson.getStatus()!=1){
+                return null;
+            }
+        }
+        return person;
     }
 }
