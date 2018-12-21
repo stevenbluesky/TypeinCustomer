@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PersonDAO  extends CrudRepository<PersonPO,Integer> {
+public interface PersonDAO  extends CrudRepository<PersonPO,Long> {
 
-    PersonPO findByPersonCodeAndPersonPassword(String personCode, String personPassword);
+    PersonPO findByPersonCodeAndPersonPasswordAndStatusIn(String personCode, String personPassword, int[] ints);
 }

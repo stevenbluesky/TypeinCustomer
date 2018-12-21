@@ -1,5 +1,6 @@
 package cn.com.isurpass.zufang.typeincustomer.controller;
 
+import cn.com.isurpass.zufang.typeincustomer.dao.PersonDAO;
 import cn.com.isurpass.zufang.typeincustomer.po.CustomerPO;
 import cn.com.isurpass.zufang.typeincustomer.po.PersonPO;
 import cn.com.isurpass.zufang.typeincustomer.service.CustomerService;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class CustomerController {
     @Autowired
     private CustomerService cs;
+    @Autowired
+    private PersonDAO pd;
     private static Log log = LogFactory.getLog(CustomerController.class);
     @RequestMapping("login")
     public String login(){
@@ -42,6 +45,8 @@ public class CustomerController {
             PersonPO loginperson = cs.checkLogin(ppo);
             if(loginperson==null){
                 return "unregistered";
+            }else if(loginperson.getStatus()==2) {
+                return "freeze";
             }else{
                 request.getSession().setAttribute("person",loginperson);
                 return "success";
@@ -83,6 +88,9 @@ public class CustomerController {
     public Map<String, Object> customerJsonList(PageResult pr, CustomerVO cvo,HttpServletRequest request){
         Pageable pageable = PageRequest.of(pr.getPage() - 1, pr.getRows(), Sort.Direction.DESC, "customerid");
         PersonPO person = (PersonPO) request.getSession().getAttribute("person");
+        if(person!=null&&person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
+            person = pd.findById(person.getSuperpersonid().longValue()).orElse(null);
+        }
         return cs.listSearchCustomer(pageable,cvo,person);
     }
 

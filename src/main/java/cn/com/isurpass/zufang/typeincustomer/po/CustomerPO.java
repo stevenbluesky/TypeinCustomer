@@ -1,6 +1,6 @@
 package cn.com.isurpass.zufang.typeincustomer.po;
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -25,6 +25,7 @@ public class CustomerPO {
     private String label;
     private String customerinfo;
     private Date createtime;
+    private Integer typeinpersonid;
 
     public Integer getCustomerid() {
         return customerid;
@@ -162,27 +163,12 @@ public class CustomerPO {
         this.createtime = createtime;
     }
 
-    @Override
-    public String toString() {
-        return "CustomerPO{" +
-                "customerid=" + customerid +
-                ", personid=" + personid +
-                ", name='" + name + '\'' +
-                ", sex=" + sex +
-                ", countrycode='" + countrycode + '\'' +
-                ", phonenumber='" + phonenumber + '\'' +
-                ", identitytype=" + identitytype +
-                ", identity='" + identity + '\'' +
-                ", mail='" + mail + '\'' +
-                ", title=" + title +
-                ", address='" + address + '\'' +
-                ", fingerprint='" + fingerprint + '\'' +
-                ", cardnumber='" + cardnumber + '\'' +
-                ", password='" + password + '\'' +
-                ", label='" + label + '\'' +
-                ", customerinfo='" + customerinfo + '\'' +
-                ", createtime=" + createtime +
-                '}';
+    public Integer getTypeinpersonid() {
+        return typeinpersonid;
+    }
+
+    public void setTypeinpersonid(Integer typeinpersonid) {
+        this.typeinpersonid = typeinpersonid;
     }
 }
 

@@ -37,6 +37,8 @@
             success: function (data) {//返回json结果
                 if(data=="unregistered"){
                     spop({template: '用户名或密码错误！', position  : 'top-center', style: 'warning', autoclose: 2000});
+                }else if(data=="freeze") {
+                    spop({template: '账号被冻结！', position  : 'top-center', style: 'warning', autoclose: 2000});
                 }else if(data=="success") {
                     window.location.href="index";
                     window.event.returnValue=false;
