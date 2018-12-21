@@ -73,22 +73,26 @@ public class CustomerService {
             cd.deleteByCustomerid(ids[i] );
         }
     }
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(CustomerPO cpo, PersonPO person) {
         cpo.setCountrycode(Constants.DEFAULT_COUNTRY_CODE);
         cpo.setIdentitytype(Constants.DEFAULT_IDENTITY_TYPE);
         cpo.setCreatetime(new Date());
-
         String customerinfo = cpo.getName()+cpo.getPhonenumber()+cpo.getIdentity()+cpo.getMail()+cpo.getAddress()+cpo.getLabel();
         cpo.setCustomerinfo(customerinfo);
-        if(person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
-            cpo.setPersonid(person.getSuperpersonid().longValue());
-            cpo.setTypeinpersonid(person.getId().intValue());
+        if(cpo.getCustomerid()==null) {
+            if(person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
+                cpo.setPersonid(person.getSuperpersonid().longValue());
+                cpo.setTypeinpersonid(person.getId().intValue());
+            }else{
+                cpo.setPersonid(person.getId());
+                cpo.setTypeinpersonid(person.getId().intValue());
+            }
         }else{
-            cpo.setPersonid(person.getId());
-            cpo.setTypeinpersonid(person.getId().intValue());
+            CustomerPO cus = cd.findByCustomerid(cpo.getCustomerid());
+            cpo.setPersonid(cus.getPersonid());
+            cpo.setTypeinpersonid(cus.getTypeinpersonid());
         }
-
         cd.save(cpo);
     }
 
