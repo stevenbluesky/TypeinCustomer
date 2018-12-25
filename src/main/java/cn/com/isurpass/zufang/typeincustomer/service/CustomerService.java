@@ -58,6 +58,17 @@ public class CustomerService {
             z.setPhonenumber(zw.getPhonenumber());
             z.setTitle(zw.getTitle());
             z.setLabel(zw.getLabel());
+            PersonPO personPO;
+            if(zw.getTypeinpersonid()!=null&&zw.getTypeinpersonid()!=0){
+                personPO = pd.findById(zw.getTypeinpersonid().longValue()).orElse(null);
+            }else{
+                personPO = pd.findById(zw.getPersonid()).orElse(null);
+            }
+            if(personPO!=null){
+                z.setTypeinpersonname(personPO.getRealName());
+            }else{
+                z.setTypeinpersonname("");
+            }
             listVO.add(z);
         });
     }

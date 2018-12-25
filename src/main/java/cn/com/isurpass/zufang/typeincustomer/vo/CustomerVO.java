@@ -7,6 +7,7 @@ public class CustomerVO {
     private String phonenumber;
     private Integer title;
     private String label;
+    private String typeinpersonname;
 
     public Integer getCustomerid() {
         return customerid;
@@ -56,15 +57,11 @@ public class CustomerVO {
         this.label = label;
     }
 
-    @Override
-    public String toString() {
-        return "CustomerVO{" +
-                "customerid=" + customerid +
-                ", name='" + name + '\'' +
-                ", sex=" + sex +
-                ", phonenumber='" + phonenumber + '\'' +
-                ", title=" + title +
-                ", label='" + label + '\'' +
-                '}';
+    public String getTypeinpersonname() {
+        return typeinpersonname;
+    }
+
+    public void setTypeinpersonname(String typeinpersonname) {
+        this.typeinpersonname = typeinpersonname;
     }
 }
