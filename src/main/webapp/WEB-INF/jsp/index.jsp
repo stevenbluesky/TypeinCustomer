@@ -97,6 +97,7 @@
         <th data-field="phonenumber" class="text-center">电话</th>
         <th data-field="title" class="text-center" data-formatter="formatter_title">职务</th>
         <th data-field="label" class="text-center">标签</th>
+        <th data-field="typeinpersonname" class="text-center">录入员</th>
     </tr>
     </thead>
 
