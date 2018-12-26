@@ -20,7 +20,13 @@ public class DeviceService {
 
     @Transactional
     public List<DevicePO> findFingerDevice(PersonPO person) {
-        return dd.findByPersonIdAndDeviceType(person.getId(),Constants.DEVICE_TYPE_FINGER);
+        long personid= 0;
+        if(person.getType()==1&&person.getSuperpersonid()!=null&&person.getSuperpersonid()!=0){
+            personid = person.getSuperpersonid().longValue();
+        }else{
+            personid = person.getId();
+        }
+        return dd.findByPersonIdAndDeviceType(personid,Constants.DEVICE_TYPE_FINGER);
     }
     @Transactional
     public void readFingerpring(int zwaveid) {
