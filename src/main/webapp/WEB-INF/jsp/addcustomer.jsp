@@ -261,7 +261,7 @@
                 clearInterval(timer);
                 $("#fingerprint").val(result);
                 $("#weiluru").html("已录入");
-                spop({template: "录入成功", position  : 'top-center', style: 'success', autoclose: 2000});
+                spop({template: "指纹录入成功，请点确认按钮保存客户信息", position  : 'top-center', style: 'success', autoclose: 2000});
             }
         },1000);
 
